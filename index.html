@@ -5,6 +5,11 @@
     <script language="javascript">
         function cut()
         {
+            if(!document.getElementById("source_img").files[0])
+            {
+                alert("Please select a file first.");
+                return;
+            }
             var reader = new FileReader();
             reader.onload = function (event)
             {
@@ -53,6 +58,8 @@
 <body>
     <input type="file" id="source_img" accept="image/*" />
     <button onclick="javascript:cut();">cut</button>
+    <br />
+    if browser ask you to grant permission to download multiple files, please grant it.
 </body>
 
 </html>
