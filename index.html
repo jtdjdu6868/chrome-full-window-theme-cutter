@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script language="javascript">
+        function cut()
+        {
+            var reader = new FileReader();
+            reader.onload = function (event)
+            {
+                var img = new Image();
+                img.onload = function ()
+                {
+                    var width = img.width;
+                    var height = img.height;
+
+                    var sections = {
+                        "frame_overlay": { "offset": 0, "height": 46, "padding": 0 },
+                        "frame": { "offset": 0, "height": 50, "padding": 4 },
+                        "toolbar": { "offset": 12, "height": 108, "padding": 0 },
+                        "tab_background": { "offset": 12, "height": 34, "padding": 0 },
+                        "ntp_background": { "offset": 121, "height": height - 121, "padding": 0 }  // The remaining part
+                    }
+
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    for(var section in sections)
+                    {
+                        var params = sections[section];
+                        canvas.width = width;
+                        canvas.height = params.height;
+                        ctx.drawImage(img, 0, params.offset, width, params.height, 0, params.padding, width, params.height);
+
+                        var cropped_img = canvas.toDataURL('image/png');
+                        downloadImage(cropped_img, 'theme_' + section + '.png');
+                    }
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(document.getElementById("source_img").files[0]);
+        }
+
+        function downloadImage(data, filename)
+        {
+            var link = document.createElement('a');
+            link.download = filename;
+            link.href = data;
+            link.click();
+        }
+    </script>
+</head>
+
+<body>
+    <input type="file" id="source_img" accept="image/*" />
+    <button onclick="javascript:cut();">cut</button>
+</body>
+
+</html>
